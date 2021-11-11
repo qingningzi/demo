@@ -1,11 +1,11 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Hello
 
 # Controls when the workflow will run
 on:
   push:
-  # 定时任务
+# 定时任务
   schedule:
     - cron: '5 * * * *'
 
@@ -24,14 +24,20 @@ jobs:
         with:
           node-version: '12.x'
 
-      - name: 系统安装 vuepress
+      # 系统安装 vuepress
+      - name: os install vuepress
         run: yarn global add vuepress
 
-      - name: 编译
+      # 编译
+      - name: vuepress build
         run: $(yarn global bin)/vuepress build
+
+      # 显示部署状态
+      - name: Display status from deploy
+        run: echo "${{ steps.deploy.outputs.status }}"
 
       - name: 发送信息到飞书群
         run: |
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"msg_type":"text","content":{"text":"部署完成"}}' \
+          -d '{"msg_type":"text","content":{"text":"部署完成\n${content}"}}' \
           https://open.feishu.cn/open-apis/bot/v2/hook/${{secrets.FEISHU_ROBOT_APPID}}
