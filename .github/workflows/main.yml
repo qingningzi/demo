@@ -5,8 +5,6 @@ name: CI
 # Controls when the workflow will run
 on:
   push:
-    tags:
-      - release-v*
   # 定时任务
   schedule:
     - cron: '5 * * * *'
