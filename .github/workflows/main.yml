@@ -32,12 +32,26 @@ jobs:
       - name: vuepress build
         run: $(yarn global bin)/vuepress build
 
+      # 复制文件到服务器
+      - name: Deploy to server
+        id: deploy
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{secrets.DEPLOY_KEY}}
+        with:
+          flags: '-avzr'
+          options: ''
+          src: '.vuepress/dist/'
+          dest: ${{secrets.SSH_USER}}@${{secrets.SSH_HOST}}:${{secrets.SSH_DEST}}
+
       # 显示部署状态
       - name: Display status from deploy
         run: echo "${{ steps.deploy.outputs.status }}"
 
-      - name: 发送信息到飞书群
+      # 发送信息到飞书群
+      - name: Send Message to Feishu Group by Robot
         run: |
+          content=`git log --simplify-by-decoration -n 1`
           curl -X POST -H "Content-Type: application/json" \
           -d '{"msg_type":"text","content":{"text":"部署完成\n${content}"}}' \
           https://open.feishu.cn/open-apis/bot/v2/hook/${{secrets.FEISHU_ROBOT_APPID}}
