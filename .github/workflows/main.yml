@@ -7,6 +7,9 @@ on:
   push:
     tags:
       - release-v*
+  # 定时任务
+  schedule:
+    - cron: '5 * * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,14 +22,19 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Install vuepress
+        run: yarn global add vuepress
+
+      - name: Build
+        run: $(yarn global bin)/vuepress build
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
           curl -X POST -H "Content-Type: application/json" \
           -d '{"msg_type":"text","content":{"text":"部署完成"}}' \
-          https://open.feishu.cn/open-apis/bot/v2/hook/1d8ac6e6-8094-46a2-8263-a21a1a0d508d
+          https://open.feishu.cn/open-apis/bot/v2/hook/${{secrets.FEISHU_ROBOT_APPID}}
