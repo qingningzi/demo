@@ -53,5 +53,5 @@ jobs:
         run: |
           content=`git log --simplify-by-decoration -n 1`
           curl -X POST -H "Content-Type: application/json" \
-          -d '{"msg_type":"text","content":{"text":"部署完成了耶, \n$content"}' \
+          -d '{"msg_type":"text","content":{"text":"部署完成了耶, \n'"${content}"'"}' \
           https://open.feishu.cn/open-apis/bot/v2/hook/${{secrets.FEISHU_ROBOT_APPID}}
