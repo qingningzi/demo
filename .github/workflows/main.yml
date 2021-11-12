@@ -5,9 +5,9 @@ name: Hello
 # Controls when the workflow will run
 on:
   push:
-  # 定时任务
+# 定时任务 https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#scheduled-events
   schedule:
-    - cron: '5 * * * *'
+    - cron: '*/5 * * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
